@@ -6,6 +6,15 @@
       <RouterLink :to="{ name: 'login' }" class="font-semibold text-primary">Login</RouterLink>
     </p>
     <VaInput
+      v-model="formData.username"
+      :rules="[
+        (v) => !!v || 'Username field is required',
+        (v) => /^[\u4E00-\u9FA5A-Za-z0-9]{3,16}$/.test(v) || 'Username should be valid',
+      ]"
+      class="mb-4"
+      label="Username"
+    />
+    <VaInput
       v-model="formData.email"
       :rules="[(v) => !!v || 'Email field is required', (v) => /.+@.+\..+/.test(v) || 'Email should be valid']"
       class="mb-4"
@@ -63,23 +72,44 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
+import axios from 'axios'
 
 const { validate } = useForm('form')
 const { push } = useRouter()
 const { init } = useToast()
 
 const formData = reactive({
-  email: '',
-  password: '',
-  repeatPassword: '',
+  username: 'wxw9868',
+  email: 'wxw9868@163.com',
+  password: '123456789.wxw',
+  repeatPassword: '123456789.wxw',
 })
 
-const submit = () => {
-  if (validate()) {
-    init({
-      message: "You've successfully signed up",
-      color: 'success',
+axios.defaults.baseURL = 'http://localhost:8080'
+// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+function register() {
+  console.log(formData)
+  axios
+    .post('/user/register', formData)
+    .then(function (response) {
+      console.log('1: ')
+      console.log(response)
+      return true
     })
+    .catch(function (error) {
+      console.log('0: ')
+      console.log(error)
+      return false
+    })
+}
+
+const submit = () => {
+  register()
+
+  if (validate()) {
+    init({ message: "You've successfully signed up", color: 'success' })
     push({ name: 'dashboard' })
   }
 }

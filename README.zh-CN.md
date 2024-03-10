@@ -101,3 +101,10 @@ npm create vuestic@latest
 
 随时关注最新的Vuestic新闻！在[Twitter上](https://twitter.com/vuestic_ui)
 或[Linkedin上](
+
+查看当前配置的远程仓库
+git remote -v
+修改远程仓库的URL
+git remote set-url origin https://github.com/wxw9868/ledger_admin.git
+git branch -M main
+git push -u origin main
